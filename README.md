@@ -1,2 +1,2 @@
 # tychedice
-a simple API for chatroom integration
+a simple API for chatroom integration.
