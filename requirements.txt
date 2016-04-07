@@ -1,11 +1,11 @@
-#dice
-#diceroll
-#die
-#dyce
-#nicedice
-#pydice
-#pydiceparse
-#rputils
+#dice -  Best so far, but still bad.
+#diceroll - poor syntax
+#die - old and poorly named
+#dyce   - minimal features
+#nicedice  - IRC codes baked in.
+#pydice - incomplete
+#pydiceparse - incomplete
+#rputils - QT User interface???
 blinker
 coverage
 coveralls

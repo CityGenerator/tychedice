@@ -7,6 +7,7 @@
 
 from flask import Flask, render_template, request
 from flask.ext.assets import Environment, Bundle
+from rollparser import RollParser
 
 import datetime
 import json
@@ -41,7 +42,9 @@ assets.register('css_all', css)
 
 @app.route('/')
 def indexpage():
-  return render_template('home.html')
+    rp=RollParser()
+    return rp.parse('attack: 2d20H1 ; damage: 1d10+3+1d6')
+    #return render_template('home.html')
  
 if __name__ == '__main__':
     app = create_app
