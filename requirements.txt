@@ -23,4 +23,5 @@ pylint
 pytest
 pytest-cov
 rednose
+simpleparse
 unittest2
