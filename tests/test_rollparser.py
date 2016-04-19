@@ -18,9 +18,9 @@ class Test_RollParser(unittest.TestCase):
     def tearDown(self):
         """ Clean up any changes from the last run. """
         self.rp=None
-    def test_isp(self):
-        self.assertEqual('    ', self.rp.isp(1))
-        self.assertEqual(' '*16, self.rp.isp(4))
+    #def test_isp(self):
+    #    self.assertEqual('    ', self.rp.isp(1))
+    #    self.assertEqual(' '*16, self.rp.isp(4))
        
 
     def test_parse_modifier(self):
@@ -172,7 +172,7 @@ class Test_RollParser(unittest.TestCase):
 
         result=self.rp.parse('1d8-0+3d6-3')
         self.assertGreater(24, int(result) )
-        self.assertLess(1, int(result) )
+        self.assertLess(0, int(result) )
 
         result=self.rp.parse('1d6+2d6+1d4')
         self.assertGreater(23, int(result) )
