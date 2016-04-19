@@ -34,16 +34,16 @@ class RollParser(object):
 
     def parse(self, data=""):
         parser = Parser( self.declaration )
-
-        result = parser.parse( data, 'AllExpressions')
-        print "==========================="
-        print "Data is: '%s" % (data)
+        expr = parser.parse( data, 'AllExpressions')
+        results=[]
+        #print "==========================="
+        #print "Data is: '%s" % (data)
         indent=0
-        for expression in result[1]:
+        for expression in expr[1]:
             if expression[0] =="Expression":
-                print  self.isp(indent)+ "Result: %s" % str(self.parse_expression(expression[3], data, indent+1))
-        print "\n\n"
-
+                results.append(str(self.parse_expression(expression[3], data, indent+1)))
+            
+        return '; '.join(results)
 
 
     def isp(self,indent=0):
@@ -53,8 +53,18 @@ class RollParser(object):
         result=0
         start=expr[1]
         stop=expr[2]
-        print self.isp(indent)+"Parsing Modifier %s = %s" %( str(expr), data[start:stop] )
+        #print self.isp(indent)+"Parsing Modifier %s = %s" %( str(expr), data[start:stop] )
         return int(data[start:stop])
+
+    def parse_op(self,expr, data, indent=0):
+        result=0
+        start=expr[1]
+        stop=expr[2]
+        #print self.isp(indent)+"Parsing operator %s = %s [%s:%s]" %( str(expr), data[start:stop], start, stop )
+        if data[start:stop] =='+':
+            return 1
+        else:
+            return -1
 
     def parse_dice(self,expr,data, indent=0):
         result=0
@@ -73,7 +83,7 @@ class RollParser(object):
         for x in range(0,dicecount):
             roll=0
             if expr[3][-1][0] == 'Vantage':
-                print self.isp(indent)+"Vantage Detected"
+                #print self.isp(indent)+"Vantage Detected"
     
                 vstart=expr[3][-1][1]
                 vstop=expr[3][-1][2]
@@ -81,12 +91,12 @@ class RollParser(object):
                     a=random.randint(1,  int(data[start:stop]))
                     b=random.randint(1,  int(data[start:stop]))
                     roll=max(a,b)
-                    print self.isp(indent)+"Adv of %s vs %s = %s" %(a,b,roll)
+                    #print self.isp(indent)+"Adv of %s vs %s = %s" %(a,b,roll)
                 else:
                     a=random.randint(1,  int(data[start:stop]))
                     b=random.randint(1,  int(data[start:stop]))
                     roll=min(a,b)
-                    print self.isp(indent)+"Dis of %s vs %s = %s" %(a,b,roll)
+                    #print self.isp(indent)+"Dis of %s vs %s = %s" %(a,b,roll)
             else:
                 roll= random.randint(1,  int(data[start:stop]))
     
@@ -94,52 +104,25 @@ class RollParser(object):
             rolled.append(roll)
             result+=roll
     
-        print self.isp(indent)+"Rolled: %s" % rolled
-        print self.isp(indent)+"Dice result is: %s" % result
+        #print self.isp(indent)+"Rolled: %s" % rolled
+        #print self.isp(indent)+"Dice result is: %s" % result
         return result
     
     def parse_value(self,expr,data,indent=0):
         result=0
-        print self.isp(indent)+"Parsing Value %s" % str(expr)
-        first_field= expr[3][0]
-        if first_field[0] == 'Modifier':
-            start=first_field[1]
-            stop=first_field[2]
-            modifier=data[start:stop]
-            result= result + int(modifier)
-            print self.isp(indent)+"Modifier result is now %s" % result
-        elif first_field[0] == 'Dice':
-            start=i[1]
-            stop=i[2]
-            result += self.parse_dice(i,data, indent +1)
-
-        print self.isp(indent)+"*** My %s expr is %s" %(len(expr[3]), str(expr))
-        if len(expr[3]) > 2: #field 3 is op, 5 is next value
-            operator_field= expr[3][2]
-            start=operator_field[1]
-            stop=operator_field[2]
-            print self.isp(indent)+"found an operator! %s" % data[start:stop]
-            
-            second_field=expr[3][4]
-            second_start=second_field[1]
-            second_stop=second_field[2]
-            print self.isp(indent)+"found Second Value! %s" % data[second_start:second_stop]
-
-            if data[start:stop] == '+':
-                print self.isp(indent)+"Operator is +"
-                second_result= self.parse_value(second_field,data, indent + 1)
-                print self.isp(indent)+"Result now %s + %s" % (str(result), second_result)
-                result= result + second_result
-            else:
-                print self.isp(indent)+"Operator is -"
-                second_result= self.parse_value(second_field,data, indent + 1)
-                print self.isp(indent)+"Result now %s - %s" % (str(result), second_result)
-                result= result - second_result
-        print self.isp(indent)+"Final result is now %s" % str(result)
+        #print self.isp(indent)+"Parse value thing:"+ str(expr[3])
+        last_op=1
+        for i in expr[3]:
+            if i[0] == 'Modifier':
+                result = result + last_op*self.parse_modifier(i,data,indent+1)
+            elif i[0] == 'Operator':
+                last_op = self.parse_op(i,data,indent+1)
+            elif i[0] == 'Dice':
+                result = result + last_op*self.parse_dice(i,data,indent+1)
         return result
 
     def parse_expression(self,expr, data, indent=0):
-        print self.isp(indent)+"Parsing expression %s" % str(expr)
+        #print self.isp(indent)+"Parsing expression %s" % str(expr)
         result= ""
         for i in expr:
             if i[0] == 'Label':
@@ -151,8 +134,8 @@ class RollParser(object):
                 stop=i[2]
                 result += str(self.parse_value(i,data, indent +1))
     
-        pprint(expr)
-        print self.isp(indent)+"Expression result is now %s" % result
+        #pprint(expr)
+        #print self.isp(indent)+"Expression result is now %s" % result
         return result
 
 
