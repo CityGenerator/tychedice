@@ -9,7 +9,6 @@ Flask-Testing
 Flask-WTF
 gunicorn
 jsmin
-mock
 nose
 pylint
 pytest
