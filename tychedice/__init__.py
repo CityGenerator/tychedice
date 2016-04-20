@@ -42,9 +42,19 @@ assets.register('css_all', css)
 
 @app.route('/')
 def indexpage():
-    rp=RollParser()
-    return rp.parse('attack: 2d20H1 ; damage: 1d10+3+1d6')
-    #return render_template('home.html')
+    return render_template('home.html')
+
+
+@app.route('/roll', methods=['GET','POST'])
+def roll_page():
+    if request.get_json():
+        rp=RollParser()
+        dataDict=request.get_json()
+        message = dataDict['item']['message']['message']
+        message=message[6:]
+        return render_template('result.json', message=rp.parse(str(message)))
+    else:
+        return render_template('home.html')
  
 if __name__ == '__main__':
     app = create_app

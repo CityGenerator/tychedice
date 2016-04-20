@@ -1,0 +1,6 @@
+{
+    "color": "green",
+    "message": "{{message}}",
+    "notify": false,
+    "message_format": "text"
+}
