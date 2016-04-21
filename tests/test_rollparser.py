@@ -186,6 +186,10 @@ class Test_RollParser(unittest.TestCase):
         self.assertGreater('perception check: 9', result )
         self.assertLess('perception check: 2', result )
 
+        result=self.rp.parse('save vs. spell: 1d6+1')
+        self.assertGreater('save vs. spell: 8', result )
+        self.assertLess('save vs. spell: 1', result )
+
 #        result=self.rp.parse('stat roll: 4d6H3')
 
         result=self.rp.parse('Attack: 1d20+4 ; Damage: 1d6+1d4-1')

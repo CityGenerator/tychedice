@@ -19,7 +19,7 @@ class RollParser(object):
         DiceType :=[0-9]+
         Operator := [+-]
         Dice := DiceCount,[d],DiceType,(Vantage/HiLo)
-        Label := [a-zA-Z0-9_ ]+,[:]
+        Label := [a-zA-Z0-9_ .?)(!@-]+,[:]
         Modifier := Operator?,[0-9]+
         Value := (Dice/Modifier),(ws,Operator,ws,(Dice/Modifier))*
         Expression := (Label)?,ws,Value
