@@ -1,6 +1,6 @@
 {
     "color": "green",
-    "message": "{{message}}",
+    "message": "{{message[1]}} == <em>{{message[0]}}</em>",
     "notify": false,
-    "message_format": "text"
+    "message_format": "html"
 }
